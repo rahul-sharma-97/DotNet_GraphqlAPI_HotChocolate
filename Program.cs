@@ -13,6 +13,16 @@ builder.Services
     .AddGraphQLServer()
     .AddQueryType<BookQueries>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", p =>
+    {
+        p.WithOrigins("http://localhost:4200")
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,9 +32,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors("AllowAngularApp");
 
 app.MapControllers();
 
